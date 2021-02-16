@@ -33,7 +33,7 @@ request_prs()
     -H "Authorization: token ${github_token}" \
     "https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls?base=${base_branch}&sort=updated&direction=desc&state=closed&per_page=100" | \
     jq -c -r '.[] | "\(.merged_at) \(.merge_commit_sha) \(.html_url)"' | \
-    awk '{a[i++]=$0} END {for (j=i-1; j>=0;) print a[j--] }')
+    sort)
 
   printf "$prs"
 
