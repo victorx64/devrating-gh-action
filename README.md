@@ -6,7 +6,7 @@ You can compete with each other and earn XP for pull requests.
 Just throw this to `.github/workflows/devrating.yml` in your repo:
 
 ```yaml
-name: Ranked development
+name: Updating ranks in devrating.net
 on:
   pull_request:
     branches: [ main ]  # Put your dev branch
