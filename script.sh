@@ -11,7 +11,7 @@ send_to_devrating()
   json=$(devrating serialize commit -m $1 -p $GITHUB_WORKSPACE -l $2 -o $devrating_organization -n $devrating_repository -t $3)
 
   set -x
-  curl -X POST "https://devrating.net/api/v1/diffs/${devrating_key}" -H "Content-Type: application/json" --data-raw $json | jq
+  curl -X POST "https://devrating.net/api/v1/diffs/${devrating_key}" -H "Content-Type: application/json" --data-raw $json
   set +x
 }
 
