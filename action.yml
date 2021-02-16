@@ -14,7 +14,7 @@ inputs:
     required: false
   base-branch:
     description: Your main development branch (usually 'master' or 'main')
-    default: ${{ github.event.repository.default_branch }}
+    default: ${{ github.base_ref || github.event.repository.default_branch }}
     required: false
 
 runs:

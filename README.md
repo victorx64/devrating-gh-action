@@ -23,7 +23,6 @@ jobs:
       with:
         devrating-organization: # Your Organization_ID. Visit https://devrating.net/#/keys to obtain
         devrating-api-key: # Your API_Key. Visit https://devrating.net/#/keys to create new
-        base-branch: main # Put your dev branch
 ```
 
 Then, merge a pull request to initiate the export.
