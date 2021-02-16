@@ -25,7 +25,8 @@ runs:
         "${{ inputs.devrating-repository }}" \
         "${{ inputs.devrating-organization }}" \
         "${{ inputs.devrating-api-key }}" \
-        "${{ inputs.base-branch }}"
+        "${{ inputs.base-branch }}" \
+        "${{ github.token }}"
       shell: sh
 
 branding:
