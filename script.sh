@@ -8,7 +8,7 @@ github_token="$5"
 
 send_to_devrating()
 {
-  json=$(devrating serialize commit -m $1 -p $GITHUB_WORKSPACE -l $2 -o $devrating_organization -n $devrating_repository -t $3)
+  json=$(devrating serialize diff -t $1 -b $2 -e $3 -a $4 -l $5 -p $GITHUB_WORKSPACE -o $devrating_organization -n $devrating_repository)
 
   set -x
   curl -i -X POST "https://devrating.net/api/v1/diffs/key" -H "key: ${devrating_key}" -H "Content-Type: application/json" --data-raw $json
@@ -19,20 +19,53 @@ analyze_pr()
 {
   remainder="$1"
   merged_at="${remainder%% *}"; remainder="${remainder#* }"
-  sha="${remainder%% *}"; remainder="${remainder#* }"
+  merge_commit="${remainder%% *}"; remainder="${remainder#* }"
+  base_commit="${remainder%% *}"; remainder="${remainder#* }"
+  head_commit="${remainder%% *}"; remainder="${remainder#* }"
+  email="${remainder%% *}"; remainder="${remainder#* }"
   url="${remainder%% *}";
 
-  if [ "$merged_at" != "null" ]; then
-    send_to_devrating $sha $url $merged_at
+  if [ "$merge_commit" != "null" ]; then
+    send_to_devrating $merged_at $merge_commit~ $merge_commit $email $url
+  else
+    send_to_devrating $merged_at $base_commit $head_commit $email $url
   fi
 }
 
 request_prs()
 {
-  prs=$(curl -H "Accept: application/vnd.github.v3+json" \
-    -H "Authorization: token ${github_token}" \
-    "https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls?base=${base_branch}&sort=updated&direction=desc&state=closed&per_page=100" | \
-    jq -c -r '.[] | "\(.merged_at) \(.merge_commit_sha) \(.html_url)"' | \
+  minus_90_days_year=$(date --date="90 days ago" +"%Y")
+  minus_90_days_month=$(date --date="90 days ago" +"%m")
+  minus_90_days_day=$(date --date="90 days ago" +"%d")
+  merged_after="$minus_90_days_year-$minus_90_days_month-$minus_90_days_day"
+
+  prs=$(curl -H "Authorization: token ${github_token}" -X POST -d "{ \
+    \"query\": \"query { \
+        search (query: \\\"repo:${GITHUB_REPOSITORY} base:${base_branch} type:pr merged:>=${merged_after} sort:updated-desc\\\", type: ISSUE, first: 100) { \
+          nodes { \
+            ... on PullRequest { \
+              mergedAt \
+              mergeCommit { \
+                oid \
+              } \
+              baseRefOid \
+              headRefOid \
+              commits(first: 1) { \
+                nodes { \
+                  commit { \
+                    author { \
+                      email \
+                    } \
+                  } \
+                } \
+              } \
+              url \
+            } \
+          } \
+        } \
+      }\" \
+    }" https://api.github.com/graphql | \
+    jq -c -r '.data.search.nodes | .[] | "\(.mergedAt) \(.mergeCommit.oid) \(.baseRefOid) \(.headRefOid) \(.commits.nodes | .[0] | .commit.author.email) \(.url)"' | \
     sort)
 
   printf "$prs"
@@ -45,7 +78,7 @@ request_prs()
   done
 }
 
-dotnet tool install -g devrating.consoleapp --version 3.1.1
+dotnet tool install -g devrating.consoleapp --version 3.1.4
 request_prs
 
 url_org=$(jq -rn --arg x $devrating_organization '$x|@uri')
