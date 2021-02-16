@@ -11,7 +11,7 @@ send_to_devrating()
   json=$(devrating serialize commit -m $1 -p $GITHUB_WORKSPACE -l $2 -o $devrating_organization -n $devrating_repository -t $3)
 
   set -x
-  curl -X POST "https://devrating.net/api/v1/diffs/${devrating_key}" -H "Content-Type: application/json" --data-raw $json
+  curl -X POST "https://devrating.net/api/v1/diffs/key" -H "key: ${devrating_key}" -H "Content-Type: application/json" --data-raw $json
   set +x
 }
 
@@ -47,4 +47,8 @@ request_prs()
 
 dotnet tool install -g devrating.consoleapp --version 3.1.1
 request_prs
-echo "Visit: https://devrating.net/#/repositories/${devrating_organization}/${devrating_repository}"
+
+url_org=$(jq -rn --arg x $devrating_organization '$x|@uri')
+url_repo=$(jq -rn --arg x $devrating_repository '$x|@uri')
+
+echo "Visit: https://devrating.net/#/repositories/${url_org}/${url_repo}"
