@@ -78,7 +78,7 @@ request_prs()
   done
 }
 
-dotnet tool install -g devrating.consoleapp --version 3.1.4
+dotnet tool install -g devrating.consoleapp --version 3.1.5
 request_prs
 
 url_org=$(jq -rn --arg x $devrating_organization '$x|@uri')

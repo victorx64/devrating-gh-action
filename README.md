@@ -1,6 +1,12 @@
 This action builds a rating of contributors by the stability of code. 
 You can compete with each other and earn XP for pull requests.
 
+## Demo
+
+[Rating of bitcoin contributors:](https://devrating.net/#/repositories/sgUj3bYc7wXTAXjF5DN0ON7lTTT2/bitcoin%2Fbitcoin)
+
+![](screenshot.png)
+
 ## Usage
 
 Just throw this to `.github/workflows/devrating.yml` in your repo:
@@ -25,4 +31,4 @@ jobs:
         devrating-api-key: # Your API_Key. Visit https://devrating.net/#/keys to create new
 ```
 
-Then, merge a pull request to initiate the export.
+Then, **close** a pull request to initiate the action.
