@@ -16,6 +16,10 @@ inputs:
     description: Your main development branch (usually 'master' or 'main')
     default: ${{ github.base_ref || github.event.repository.default_branch }}
     required: false
+  max-additions:
+    description: Skips PRs with more added lines of code. "0" — no limits
+    default: "4000"
+    required: false
 
 runs:
   using: "composite"
@@ -26,7 +30,8 @@ runs:
         "${{ inputs.devrating-organization }}" \
         "${{ inputs.devrating-api-key }}" \
         "${{ inputs.base-branch }}" \
-        "${{ github.token }}"
+        "${{ github.token }}" \
+        "${{ input.max-additions }}"
       shell: sh
 
 branding:

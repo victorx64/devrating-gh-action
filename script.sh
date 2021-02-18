@@ -5,6 +5,7 @@ devrating_organization="$2"
 devrating_key="$3"
 base_branch="$4"
 github_token="$5"
+max_additions="$6"
 
 send_to_devrating()
 {
@@ -19,16 +20,21 @@ analyze_pr()
 {
   remainder="$1"
   merged_at="${remainder%% *}"; remainder="${remainder#* }"
+  additions="${remainder%% *}"; remainder="${remainder#* }"
   merge_commit="${remainder%% *}"; remainder="${remainder#* }"
   base_commit="${remainder%% *}"; remainder="${remainder#* }"
   head_commit="${remainder%% *}"; remainder="${remainder#* }"
   email="${remainder%% *}"; remainder="${remainder#* }"
   url="${remainder%% *}";
 
-  if [ "$merge_commit" != "null" ]; then
-    send_to_devrating $merged_at $merge_commit~ $merge_commit $email $url
+  if [ "$max_additions" -eq "0" ] || [ "$additions" -lt "$max_additions" ]; then
+    if [ "$merge_commit" != "null" ]; then
+      send_to_devrating $merged_at $merge_commit~ $merge_commit $email $url
+    else
+      send_to_devrating $merged_at $base_commit $head_commit $email $url
+    fi
   else
-    send_to_devrating $merged_at $base_commit $head_commit $email $url
+    printf "Skipped PR with ${additions} additions merged at ${merged_at}\n\n"
   fi
 }
 
@@ -45,6 +51,7 @@ request_prs()
           nodes { \
             ... on PullRequest { \
               mergedAt \
+              additions \
               mergeCommit { \
                 oid \
               } \
@@ -65,7 +72,7 @@ request_prs()
         } \
       }\" \
     }" https://api.github.com/graphql | \
-    jq -c -r '.data.search.nodes | .[] | "\(.mergedAt) \(.mergeCommit.oid) \(.baseRefOid) \(.headRefOid) \(.commits.nodes | .[0] | .commit.author.email) \(.url)"' | \
+    jq -c -r '.data.search.nodes | .[] | "\(.mergedAt) \(.additions) \(.mergeCommit.oid) \(.baseRefOid) \(.headRefOid) \(.commits.nodes | .[0] | .commit.author.email) \(.url)"' | \
     sort)
 
   printf "$prs"
