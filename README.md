@@ -32,3 +32,8 @@ jobs:
 ```
 
 Then, **close** a pull request to initiate the action.
+
+## Support
+
+It should be clear how to use. If not, ask us in
+our [Telegram chat](https://t.me/devratingchat).

@@ -34,7 +34,7 @@ analyze_pr()
       send_to_devrating $merged_at $base_commit $head_commit $email $url
     fi
   else
-    printf "Skipped PR with ${additions} additions merged at ${merged_at}\n\n"
+    echo "Skipped a PR with ${additions} additions. (${url})"
   fi
 }
 
@@ -75,17 +75,17 @@ request_prs()
     jq -c -r '.data.search.nodes | .[] | "\(.mergedAt) \(.additions) \(.mergeCommit.oid) \(.baseRefOid) \(.headRefOid) \(.commits.nodes | .[0] | .commit.author.email) \(.url)"' | \
     sort)
 
-  printf "$prs"
+  echo "$prs"
 
-  IFS=$'
-'
+  IFS=$"
+"
 
   for pr in $prs; do
     analyze_pr $pr
   done
 }
 
-dotnet tool install -g devrating.consoleapp --version 3.1.5
+dotnet tool install -g devrating.consoleapp --version 3.2.0
 request_prs
 
 url_org=$(jq -rn --arg x $devrating_organization '$x|@uri')
