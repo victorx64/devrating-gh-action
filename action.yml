@@ -31,7 +31,7 @@ runs:
         "${{ inputs.devrating-api-key }}" \
         "${{ inputs.base-branch }}" \
         "${{ github.token }}" \
-        "${{ input.max-additions }}"
+        "${{ inputs.max-additions }}"
       shell: sh
 
 branding:
