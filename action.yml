@@ -4,10 +4,12 @@ author: Victor Semenov
 inputs:
   devrating-organization:
     description: Your Organization_ID. Visit https://devrating.net/#/keys to obtain
-    required: true
+    default: sgUj3bYc7wXTAXjF5DN0ON7lTTT2
+    required: false
   devrating-api-key:
     description: Your API_Key. Visit https://devrating.net/#/keys to create new
-    required: true
+    default: anonymous
+    required: false
   devrating-repository:
     description: The repository name to be shown on devrating.net
     default: ${{ github.repository }}

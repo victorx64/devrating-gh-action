@@ -23,12 +23,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        fetch-depth: 0  # Required to be 0
+        fetch-depth: 0
 
     - uses: victorx64/devrating-gh-action@v0
-      with:
-        devrating-organization: # Your Organization_ID. Visit https://devrating.net/#/keys to obtain
-        devrating-api-key: # Your API_Key. Visit https://devrating.net/#/keys to create new
 ```
 
 Then, **close** a pull request to initiate the action.
