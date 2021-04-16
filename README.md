@@ -3,9 +3,7 @@ You can compete with each other and earn XP for pull requests.
 
 ## Demo
 
-[Rating of bitcoin contributors:](https://devrating.net/#/repositories/sgUj3bYc7wXTAXjF5DN0ON7lTTT2/bitcoin%2Fbitcoin)
-
-![](screenshot.png)
+[![](screenshot.png)](https://devrating.net/#/repositories/sgUj3bYc7wXTAXjF5DN0ON7lTTT2/Ryujinx%2FRyujinx)
 
 ## Usage
 
